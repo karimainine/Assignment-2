@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:sec="http://cxf.apache.org/configuration/security" xmlns:http="http://cxf.apache.org/transports/http/configuration"
+	xmlns:soap="http://cxf.apache.org/bindings/soap"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/beans 
+         http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+         http://cxf.apache.org/jaxws
+         http://cxf.apache.org/schemas/jaxws.xsd
+         http://cxf.apache.org/configuration/security
+         http://cxf.apache.org/schemas/configuration/security.xsd
+         http://cxf.apache.org/transports/http/configuration
+         http://cxf.apache.org/schemas/configuration/http-conf.xsd">
+
+	<!-- <bean id="myPasswordCallback" class="service.ServerPasswordCallback" />  -->
+	
+	<jaxws:endpoint id="ravelry" implementor="service.RavelryImpl"
+		wsdlLocation="WEB-INF/wsdl/Ravelry.wsdl" address="/ravelry">
+		<!-- Uncomment only if using WS-SecurityPolicy
+		<jaxws:properties>
+			<entry key="ws-security.callback-handler">
+				<ref bean="myPasswordCallback" />
+			</entry>
+		</jaxws:properties>
+		 -->
+
+	</jaxws:endpoint>
+</beans>

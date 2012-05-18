@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="Ravelry"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://www.example.org/Ravelry"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:fi="http://java.sun.com/xml/ns/wsit/2006/09/policy/fastinfoset/service"
+	xmlns:tcp="http://java.sun.com/xml/ns/wsit/2006/09/policy/soaptcp/service"
+	xmlns:sc="http://schemas.sun.com/2006/03/wss/server" xmlns:wspp="http://java.sun.com/xml/ns/wsit/policy"
+	xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust" xmlns:wsaw="http://www.w3.org/2005/08/addressing"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy"
+	targetNamespace="http://www.example.org/Ravelry">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.example.org/Ravelry">
+			<xsd:element name="uploadPattern">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="file" type="xsd:base64Binary" />
+						<xsd:element name="name" type="xsd:string"/>
+						<xsd:element name="price" type="xsd:double"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="uploadPatternResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="message" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+            <xsd:element name="InvalidFile" type="xsd:string"></xsd:element>
+            <xsd:element name="NameAlreadyExists" type="xsd:string"></xsd:element>
+            <xsd:element name="InvalidPrice" type="xsd:string"></xsd:element>
+            <xsd:element name="AccessDenied" type="xsd:string"></xsd:element>
+            <xsd:element name="sellPatternResponse">
+            	<xsd:complexType>
+            		<xsd:sequence>
+            			<xsd:element name="balance" type="xsd:double"></xsd:element>
+            			<xsd:element name="file"
+            				type="xsd:base64Binary">
+            			</xsd:element>
+            		</xsd:sequence>
+            	</xsd:complexType>
+            </xsd:element>
+            <xsd:element name="InsufficientFunds" type="xsd:string"></xsd:element>
+            <xsd:element name="sellPattern">
+            	<xsd:complexType>
+            		<xsd:sequence>
+            			<xsd:element name="name" type="xsd:string"></xsd:element>
+            			<xsd:element name="yarns_value"
+            				type="xsd:double">
+            			</xsd:element>
+            		</xsd:sequence>
+            	</xsd:complexType>
+            </xsd:element>
+            <xsd:element name="PatternNotFound" type="xsd:string"></xsd:element>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="uploadPatternRequest">
+		<wsdl:part element="tns:uploadPattern" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="uploadPatternResponse">
+		<wsdl:part element="tns:uploadPatternResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="InvalidFileFault">
+		<wsdl:part name="parameters" element="tns:InvalidFile"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="NameAlreadyExistsFault">
+		<wsdl:part name="parameters" element="tns:NameAlreadyExists"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="InvalidPriceFault">
+		<wsdl:part name="parameters" element="tns:InvalidPrice"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="AccessDeniedFault">
+		<wsdl:part name="parameters" element="tns:AccessDenied"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="InsufficientFundsFault">
+		<wsdl:part name="parameters" element="tns:InsufficientFunds"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="sellPatternRequest">
+		<wsdl:part name="parameters" element="tns:sellPattern"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="sellPatternResponse">
+		<wsdl:part name="parameters" element="tns:sellPatternResponse"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="PatternNotFoundFault">
+		<wsdl:part name="parameters" element="tns:PatternNotFound"></wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="RavelryPortType">
+		<wsdl:operation name="uploadPattern">
+			<wsdl:input message="tns:uploadPatternRequest" />
+			<wsdl:output message="tns:uploadPatternResponse" />
+			<wsdl:fault name="invalidFile" message="tns:InvalidFileFault"></wsdl:fault>
+            <wsdl:fault name="nameAlreadyExists" message="tns:NameAlreadyExistsFault"></wsdl:fault>
+            <wsdl:fault name="invalidPrice" message="tns:InvalidPriceFault"></wsdl:fault>
+            <wsdl:fault name="accessDenied" message="tns:AccessDeniedFault"></wsdl:fault>
+        </wsdl:operation>
+		<wsdl:operation name="sellPattern">
+			<wsdl:input message="tns:sellPatternRequest"></wsdl:input>
+			<wsdl:output message="tns:sellPatternResponse"></wsdl:output>
+			<wsdl:fault name="accessDenied" message="tns:AccessDeniedFault"></wsdl:fault>
+			<wsdl:fault name="insufficientFunds" message="tns:InsufficientFundsFault"></wsdl:fault>
+            <wsdl:fault name="patternNotFound" message="tns:PatternNotFoundFault"></wsdl:fault>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="RavelryBinding" type="tns:RavelryPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="uploadPattern">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="sellPattern">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="RavelryService">
+		<wsdl:port name="RavelryPort" binding="tns:RavelryBinding">
+			<soap:address location="https://localhost:8443/ravelry/services/ravelry" />
+		</wsdl:port>
+	</wsdl:service>
+	<wsp:Policy wsu:Id="RavelryBindingPolicy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+					wsp:Optional="true" />
+				<sp:TransportBinding>
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<sp:HttpsToken RequireClientCertificate="false" />
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Lax />
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp />
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic128 />
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+					</wsp:Policy>
+				</sp:TransportBinding>
+				<sp:SignedSupportingTokens>
+					<wsp:Policy>
+						<sp:UsernameToken
+							sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+							<wsp:Policy>
+								<sp:WssUsernameToken10 />
+							</wsp:Policy>
+						</sp:UsernameToken>
+					</wsp:Policy>
+				</sp:SignedSupportingTokens>
+				<sp:Wss11 />
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+</wsdl:definitions> 
+
