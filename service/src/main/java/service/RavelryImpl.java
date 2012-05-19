@@ -137,6 +137,7 @@ public class RavelryImpl implements RavelryPortType {
 				throw new PatternNotFoundFault("Pattern not found!");
 			}
 		} catch (Exception e) {
+			logger.log(Level.SEVERE, "MY NEW LOG - Get Pattern: " + e.toString());
 			System.out.println("Get Pattern: " + e.toString());
 		}
 	}
@@ -145,8 +146,8 @@ public class RavelryImpl implements RavelryPortType {
 			Holder<Double> balance, Holder<byte[]> file)
 			throws AccessDeniedFault, PatternNotFoundFault,
 			InsufficientFundsFault {
-		//System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.Jdk14Logger");
-		//Logger.getAnonymousLogger().getParent().setLevel(Level.WARNING);
+		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.Jdk14Logger");
+		Logger.getAnonymousLogger().getParent().setLevel(Level.WARNING);
 		if (wsContext.isUserInRole("store")) {
 			try {
 				//logger.log(Level.SEVERE, "MY NEW LOG: Into Sell Pattern");
@@ -162,6 +163,7 @@ public class RavelryImpl implements RavelryPortType {
 									+ "'");
 					user.next();
 					int userID = user.getInt("ID");
+					logger.log(Level.SEVERE, "MY NEW LOG - User ID: " + userID);
 					// insert into sale table
 					PreparedStatement stmt = DatabaseConnection
 							.getPreparedStatememt("INSERT INTO RAVELRY_SALE (PATTERN_ID, STORE_ID, TOTAL_YARN) VALUES (?,?,?)");
@@ -169,17 +171,23 @@ public class RavelryImpl implements RavelryPortType {
 					stmt.setInt(2, userID);
 					stmt.setDouble(3, yarnsValue);
 					int result = stmt.executeUpdate();
+					logger.log(Level.SEVERE, "MY NEW LOG - SALE RESULT: " + result);
 					if (result > 0) {
-						if (result % 5 == 0) {
-							// send top designers list to stores
-							// send top stores list to designers
-						}
-						// check designers total sales
-						int totalDesignerSales = 0;
-						if (totalDesignerSales % 5 == 0) {
+						ResultSet salesCount = DatabaseConnection
+								.executeQuery("SELECT COUNT(sale.ID) AS DESIGNER_SALES FROM RAVELRY_SALE sale, RAVELRY_PATTERN pattern WHERE pattern.DESIGNER = "+ userID +"AND sale.PATTERN_ID = pattern.ID");
+						salesCount.next();
+						int designerSales = user.getInt("DESIGNER_SALES");
+						if (designerSales % 5 == 0) {
 							// get last 5 sales
 							// send 90% to designer along with details of the
 							// last 5 sales
+							
+						}
+						// check designers total sales
+						int totalSales = 0;
+						if (totalSales % 5 == 0) {
+							// send top designers list to stores
+							// send top stores list to designers
 						}
 					} else {
 						System.out.println("Failed to log sale.");
@@ -194,7 +202,8 @@ public class RavelryImpl implements RavelryPortType {
 			} catch (InsufficientFundsFault iff) {
 				throw iff;
 			} catch (Exception e) {
-				System.out.println("Sell Pattern: " + e.toString());// "Failed to log the sale due to database connectivity issues."
+				logger.log(Level.SEVERE, "Sell Pattern: " + e.toString());
+				System.out.println("MY NEW LOG - Sell Pattern: " + e.toString());// "Failed to log the sale due to database connectivity issues."
 			}
 		} else {
 			throw new AccessDeniedFault(

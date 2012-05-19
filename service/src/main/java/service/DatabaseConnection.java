@@ -20,7 +20,9 @@ public class DatabaseConnection {
 	}
 
 	public static ResultSet executeQuery(String query) throws Exception {
-		conn = DriverManager.getConnection(url, username, password);
+		if (conn == null || conn.isClosed()) {
+			conn = DriverManager.getConnection(url, username, password);
+		}
 
 		conn.setAutoCommit(false);
 		stmt = conn.createStatement();
@@ -30,9 +32,10 @@ public class DatabaseConnection {
 	}
 
 	public static PreparedStatement getPreparedStatememt(String sql) throws Exception{
-		if (conn.isClosed()) {
+		if (conn == null || conn.isClosed()) {
 			conn = DriverManager.getConnection(url, username, password);
 		}
+		conn.setAutoCommit(true);
 		prep_stmt = conn.prepareStatement(sql);
 		return prep_stmt;
 	}

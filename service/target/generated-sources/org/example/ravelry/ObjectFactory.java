@@ -39,19 +39,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SellPatternResponse }
-     * 
-     */
-    public SellPatternResponse createSellPatternResponse() {
-        return new SellPatternResponse();
-    }
-
-    /**
      * Create an instance of {@link UploadPatternResponse }
      * 
      */
     public UploadPatternResponse createUploadPatternResponse() {
         return new UploadPatternResponse();
+    }
+
+    /**
+     * Create an instance of {@link SellPatternResponse }
+     * 
+     */
+    public SellPatternResponse createSellPatternResponse() {
+        return new SellPatternResponse();
     }
 
     /**
